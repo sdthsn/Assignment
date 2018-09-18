@@ -10,7 +10,7 @@ namespace CashRegister.ExecuteBusinessLogic.Logic.Abstract
     public interface ICouponOperation
     {
 
-        UIO.Coupon FindCoupon(string promoCode);
-        void Addcoupon(UIO.Coupon coupon);
+        Task<UIO.Coupon> FindCouponAsync(string promoCode);
+        Task AddCouponAsync(UIO.Coupon coupon);
     }
 }

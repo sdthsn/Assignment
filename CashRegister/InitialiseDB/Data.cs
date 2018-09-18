@@ -6,11 +6,15 @@ using CashRegister.ExecuteBusinessLogic.Model;
 using CashRegister.ExecuteBusinessLogic.Logic.Abstract;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CashRegister.InitialiseDB
 {
     public class Data
     {
+        //Database layer, I will never bring this in UI in real project, instead I will use Autofac or Ninject IOC container
+        // I could configure the ICRProductRepository and ICRCouponRepository directly in ExecuteBusinessLogic layer, if I'd do so it would violate loosely coupled convention.
+
         private readonly ICRProductRepository _pR;
         private readonly ICRCouponRepository _cR;
         private readonly IProductOperation _pOp;
@@ -25,7 +29,7 @@ namespace CashRegister.InitialiseDB
 
         }
 
-        public void InitializeDB()
+        public async Task InitializeDB()
         {
         var products = PrepareProducts();
         var promos = PrepareCoupons();
@@ -34,13 +38,13 @@ namespace CashRegister.InitialiseDB
         
         foreach(var item in products)
             {
-                _pOp.AddProduct(item);
+                await _pOp.AddProductAsync(item);
             }
             Console.WriteLine("Products saved, now fetching saved products.....");
             Console.WriteLine();
             foreach (var item in products)
             {
-                var p = _pOp.FindProduct(item.Sku);
+                var p = await _pOp.FindProductAsync(item.Sku);
 
                 Console.WriteLine(p.ProductName);
             }
@@ -49,7 +53,7 @@ namespace CashRegister.InitialiseDB
             Console.WriteLine();
             foreach (var item in promos)
             {
-                _cOp.Addcoupon(item);
+                await _cOp.AddCouponAsync(item);
             }
 
             Console.WriteLine("Coupons saved, now fetching saved coupons.....");
@@ -57,7 +61,7 @@ namespace CashRegister.InitialiseDB
 
             foreach (var item in promos)
             {
-                var c = _cOp.FindCoupon(item.PromoCode);
+                var c =await _cOp.FindCouponAsync(item.PromoCode);
 
                 Console.WriteLine(c.PromoName);
             }

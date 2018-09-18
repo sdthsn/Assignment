@@ -37,7 +37,7 @@ namespace CashRegister.ExecuteUiBusinessLogic
                 var scanerCode = Console.ReadLine();
                 try
                 {
-                    var product = _pOp.FindProduct(scanerCode);
+                    var product = _pOp.FindProductAsync(scanerCode).Result;
                     if (product != null)
                     {
                         if (product.IsSoldByQuantity && product.IsSoldByWeight) DoDoubleOptionOperation(product);

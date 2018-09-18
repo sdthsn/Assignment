@@ -6,13 +6,14 @@ using CashRegister.ExecuteBusinessLogic.Logic.PromoLogic;
 using CashRegister.Model.UIHelperModel;
 using System;
 using System.Collections.Generic;
-
+using System.Threading.Tasks;
 
 namespace CashRegister.ExecuteUiBusinessLogic
 {
     public class CashRegisterer
     {
         //Database layer, I will never bring this in UI in real project, instead I will use Autofac or Ninject IOC container
+        // I could configure the ICRProductRepository and ICRCouponRepository directly in ExecuteBusinessLogic layer, if I'd do so it would violate loosely coupled convention.
         private readonly ICRProductRepository _pR;
         private readonly ICRCouponRepository _cR;
         private readonly IProductOperation _pOp;
@@ -33,7 +34,7 @@ namespace CashRegister.ExecuteUiBusinessLogic
             promo = new ApplyPromo(_cOp);
 
         }
-        public void CashRegisterOperation()
+        public async Task CashRegisterOperation()
         {
             var cartTotal = 0.0;
             var cartTotalAfterDiscount = 0.0;
@@ -47,7 +48,7 @@ namespace CashRegister.ExecuteUiBusinessLogic
 
             /** Coupon operation begins **/
 
-            var promoInfo = promo.AddCoupon();
+            var promoInfo =await promo.AddCoupon();
 
             if (promoInfo != null)
             {

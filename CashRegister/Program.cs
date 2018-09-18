@@ -12,15 +12,20 @@ namespace CashRegister
     {
         static void Main(string [] args)
         {
-            /*Uncomment below 2 lines if you are running this app for the first time 
+            /*Uncomment the 2 lines in "Database Initialization" region if you are running this app for the first time 
              Once your data is created comment it again
              */
-            //TODO:
-            //var prepareDbData = new Data();
-            //prepareDbData.InitializeDB();
+            #region Database Initialization
+            ////mAKING A CALL TO INTITIALISE DATABASE WITH TEST DATA
+            //TODO:UNCOMMENT
+            /*
+             var prepareDbData = new Data();     
+            prepareDbData.InitializeDB().ConfigureAwait(true);
+            */
+            #endregion
 
             var cRegister = new CashRegisterer();
-            cRegister.CashRegisterOperation();
+            cRegister.CashRegisterOperation().ConfigureAwait(true);
 
             Console.ReadKey();
         }

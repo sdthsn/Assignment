@@ -18,11 +18,11 @@ namespace CashRegister.ExecuteBusinessLogic.Logic.PromoLogic
             _cRepo = cRepo;
         }
 
-        public UIO.Coupon FindCoupon(string promoCode)
+        public async Task<UIO.Coupon> FindCouponAsync(string promoCode)
         {
             try
             {
-                DBO.Coupon dbCoupon = _cRepo.GetCoupon(promoCode);
+                DBO.Coupon dbCoupon = await _cRepo.GetCouponAsync(promoCode);
                 if (dbCoupon == null) return null;
                 return DboCouponToUio(dbCoupon);
 
@@ -33,7 +33,7 @@ namespace CashRegister.ExecuteBusinessLogic.Logic.PromoLogic
             }
         }
 
-        public void Addcoupon(UIO.Coupon coupon)
+        public async Task AddCouponAsync(UIO.Coupon coupon)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace CashRegister.ExecuteBusinessLogic.Logic.PromoLogic
                 {
                     throw new ArgumentNullException("coupon");
                 }
-                _cRepo.SaveCoupon(UioCouponToDbo(coupon));
+                await _cRepo.SaveCouponAsync(UioCouponToDbo(coupon));
 
 
 

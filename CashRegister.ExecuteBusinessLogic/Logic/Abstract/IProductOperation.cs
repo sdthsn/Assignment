@@ -9,9 +9,9 @@ namespace CashRegister.ExecuteBusinessLogic.Logic.Abstract
 {
     public interface IProductOperation
     {
-        UIO.Product FindProduct(string sku);
-        void AddProduct(UIO.Product product);
-        void EditProduct(UIO.Product product);
-        void DeleteProduct(string sku);
+        Task<UIO.Product> FindProductAsync(string sku);
+        Task AddProductAsync(UIO.Product product);
+        Task EditProductAsync(UIO.Product product);
+        Task DeleteProductAsync(string sku);
     }
 }

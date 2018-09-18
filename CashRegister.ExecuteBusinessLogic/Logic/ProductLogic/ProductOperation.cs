@@ -19,11 +19,11 @@ namespace CashRegister.ExecuteBusinessLogic.Logic.ProductLogic
             _pRepo = pRepo;
         }
 
-        public UIO.Product FindProduct(string sku)
+        public async Task<UIO.Product> FindProductAsync(string sku)
         {
             try
             {
-                DBO.Product dbProduct = _pRepo.GetProduct(sku);
+                DBO.Product dbProduct =await _pRepo.GetProductAsync(sku);
                 if (dbProduct == null) return null;
                 return DboProductToUio(dbProduct);
 
@@ -34,7 +34,7 @@ namespace CashRegister.ExecuteBusinessLogic.Logic.ProductLogic
             }
         }
 
-        public void AddProduct(UIO.Product product)
+        public async Task AddProductAsync(UIO.Product product)
         {
             try
             {
@@ -43,9 +43,7 @@ namespace CashRegister.ExecuteBusinessLogic.Logic.ProductLogic
                 {
                     throw new ArgumentNullException("product");
                 }
-                _pRepo.SaveProduct(UioProductToDbo(product));
-                
-                    
+                await _pRepo.SaveProductAsync(UioProductToDbo(product));
                 
             }
             catch (Exception ex)
@@ -54,7 +52,7 @@ namespace CashRegister.ExecuteBusinessLogic.Logic.ProductLogic
             }
         }
 
-        public void EditProduct(UIO.Product product)
+        public async Task EditProductAsync(UIO.Product product)
         {
             try
             {
@@ -64,7 +62,7 @@ namespace CashRegister.ExecuteBusinessLogic.Logic.ProductLogic
                     throw new ArgumentNullException("product");
                 }
 
-                _pRepo.UpdateProduct(UioProductToDbo(product));           
+                await _pRepo.UpdateProductAsync(UioProductToDbo(product));           
               
             }
             catch (Exception ex)
@@ -72,7 +70,7 @@ namespace CashRegister.ExecuteBusinessLogic.Logic.ProductLogic
                 throw new Exception(ex.Message, ex);
             }
         }
-        public void DeleteProduct(string sku)
+        public async Task DeleteProductAsync(string sku)
         {
             try
             {
@@ -81,7 +79,7 @@ namespace CashRegister.ExecuteBusinessLogic.Logic.ProductLogic
                 {
                     throw new ArgumentNullException("product");
                 }
-                 _pRepo.DeleteProduct(checkproduct);
+                await  _pRepo.DeleteProductAsync(checkproduct);
             }
             catch (Exception ex)
             {

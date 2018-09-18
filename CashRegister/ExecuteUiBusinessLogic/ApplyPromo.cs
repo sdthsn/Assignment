@@ -17,7 +17,7 @@ namespace CashRegister.ExecuteUiBusinessLogic
             _cOp = cOp;
         }
 
-        public  Coupon AddCoupon()
+        public async Task<Coupon> AddCoupon()
         {
             Console.Write(" Do you have a coupon? Type 'y' for Yes else type any key :");
             string answer = Console.ReadLine();
@@ -32,7 +32,7 @@ namespace CashRegister.ExecuteUiBusinessLogic
                     if (!string.IsNullOrEmpty(code) && !string.IsNullOrWhiteSpace(code))
                     {
                         inValid = false;
-                        var coupon = GetCoupon(code);
+                        var coupon =await GetCoupon(code);
                         if (coupon != null)
                         {
                             return coupon;
@@ -65,7 +65,7 @@ namespace CashRegister.ExecuteUiBusinessLogic
                 bool disCont = true;
                 while (disCont)
                 {
-                    var coupon = AddCoupon();
+                    var coupon = AddCoupon().Result;
                     if (coupon != null)
                     {
                         coupons.Add(coupon);
@@ -84,9 +84,9 @@ namespace CashRegister.ExecuteUiBusinessLogic
 
        
 
-        private Coupon GetCoupon(string prompCode)
+        private async Task<Coupon> GetCoupon(string prompCode)
         {
-            return _cOp.FindCoupon(prompCode);
+            return await _cOp.FindCouponAsync(prompCode);
         }
     }
 }
