@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,73 @@ namespace CashRegister.Domain.Concrete
             errorMessage = string.Empty;
         }
 
+        public async Task<Coupon> GetCouponAsync(string promoCode)
+        {
+            Coupon dbCoupon = await _context.Coupons.FirstOrDefaultAsync(x=>x.PromoCode==promoCode);
+
+            return dbCoupon;
+        }
+
+        public async Task SaveCouponAsync(Coupon coupon)
+        {
+            try
+            {
+                if (coupon == null)
+                {
+                    throw new ArgumentNullException("coupon");
+                }
+                _context.Coupons.Add(coupon);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                errorMessage = DbExceptionHelper(ex);
+
+                throw new Exception(errorMessage, ex);
+            }
+
+        }
+
+        public async Task  UpdateCouponAsync(Coupon coupon)
+        {
+            try
+            {
+                if (coupon == null)
+                {
+                    throw new ArgumentNullException("coupon");
+                }
+                _context.Coupons.Attach(coupon);
+                _context.Entry(coupon).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                errorMessage = DbExceptionHelper(ex);
+                throw new Exception(errorMessage, ex);
+            }
+        }
+
+        public async Task DeleteCouponAsync(Coupon coupon)
+        {
+            try
+            {
+                if (coupon == null)
+                {
+                    throw new ArgumentNullException("coupon");
+                }
+                _context.Coupons.Attach(coupon);
+                _context.Entry(coupon).State = EntityState.Deleted;
+                await _context.SaveChangesAsync();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                errorMessage = DbExceptionHelper(ex);
+                throw new Exception(errorMessage, ex);
+            }
+
+        }
+
+        #region Sync Methods if needed
 
         public Coupon GetCoupon(string promoCode)
         {
@@ -75,7 +143,7 @@ namespace CashRegister.Domain.Concrete
                     throw new ArgumentNullException("coupon");
                 }
                 //_context.Coupons.Remove(coupon);
-                _context.Entry(coupon).State = System.Data.Entity.EntityState.Deleted;
+                _context.Entry(coupon).State = EntityState.Deleted;
                 _context.SaveChanges();
             }
             catch (DbEntityValidationException ex)
@@ -85,13 +153,19 @@ namespace CashRegister.Domain.Concrete
             }
 
         }
+        #endregion
 
         #region Management Helper
 
         // Returns all the coupons exist in Data Base, this method will be used only for managerial access
-        public IEnumerable<Coupon> Coupons()
+        public IEnumerable<Coupon> GetCoupons()
         {
             return _context.Coupons.ToList();
+        }
+
+        public async Task<IEnumerable<Coupon>> GetCouponsAsync()
+        {
+            return await _context.Coupons.ToListAsync();
         }
         #endregion
         #region Exceptions help method

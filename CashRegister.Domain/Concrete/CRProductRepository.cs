@@ -2,6 +2,7 @@
 using CashRegister.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,73 @@ namespace CashRegister.Domain.Concrete
             errorMessage = string.Empty;
         }
 
+        public async Task<Product> GetProductAsync(string sku)
+        {
+            var dbProduct = await _context.Products.FirstOrDefaultAsync(x => x.Sku == sku);
+            return dbProduct;
+        }
 
+        public async Task SaveProductAsync(Product product)
+        {
+            try
+            {
+                if (product == null)
+                {
+                    throw new ArgumentNullException("product");
+                }
+                _context.Products.Add(product);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                errorMessage = DbExceptionHelper(ex);
+
+                throw new Exception(errorMessage, ex);
+            }
+        }
+
+        public async Task UpdateProductAsync(Product product)
+        {
+            try
+            {
+                if (product == null)
+                {
+                    throw new ArgumentNullException("product");
+                }
+
+                _context.Products.Attach(product);
+                _context.Entry(product).State= EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                errorMessage = DbExceptionHelper(ex);
+                throw new Exception(errorMessage, ex);
+            }
+        }
+
+        public async Task DeleteProductAsync(Product product)
+        {
+            try
+            {
+                if (product == null)
+                {
+                    throw new ArgumentNullException("product");
+                }
+
+                _context.Products.Attach(product);
+                _context.Entry(product).State = EntityState.Deleted;
+                await _context.SaveChangesAsync();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                errorMessage = DbExceptionHelper(ex);
+                throw new Exception(errorMessage, ex);
+            }
+
+        }
+
+        #region Sync Methods if needed
         public Product GetProduct(string sku)
         {
             //Product dbProduct = _context.Products.Where(x => x.Sku == sku).FirstOrDefault();
@@ -28,7 +95,6 @@ namespace CashRegister.Domain.Concrete
 
             return dbProduct;
         }
-
         public void SaveProduct(Product product)
         {
             try
@@ -86,11 +152,17 @@ namespace CashRegister.Domain.Concrete
 
         }
 
+        #endregion
+
         #region Management Helper
         // Returns all the product exist in Data Base, this method wiil be used only for managerial access
         public IEnumerable<Product> GetAllProducts()
         {
             return _context.Products.ToList(); 
+        }
+        public async Task<IEnumerable<Product>> GetAllProductsAsync()
+        {
+            return await _context.Products.ToListAsync();
         }
         #endregion
 
