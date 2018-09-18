@@ -16,8 +16,8 @@ namespace CashRegister
              Once your data is created comment it again
              */
             //TODO:
-            var prepareDbData = new Data();
-            prepareDbData.InitializeDB();
+            //var prepareDbData = new Data();
+            //prepareDbData.InitializeDB();
 
             var cRegister = new CashRegisterer();
             cRegister.CashRegisterOperation();
